@@ -1,0 +1,608 @@
+/* Loading Screen - Cinematic DEVKRITI Style */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #0a0a1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  overflow: hidden;
+  transition: opacity 0.5s ease;
+  perspective: 1000px;
+}
+
+.loading-screen.fade-out {
+  opacity: 0;
+}
+
+/* Animated Background */
+.loading-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Stars Container - Cinematic Style */
+.stars-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(1px 1px at 20px 30px, #eee, transparent),
+              radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
+              radial-gradient(0.5px 0.5px at 90px 40px, #fff, transparent),
+              radial-gradient(0.5px 0.5px at 130px 80px, rgba(255,255,255,0.6), transparent),
+              radial-gradient(1px 1px at 160px 30px, #ddd, transparent),
+              radial-gradient(0.5px 0.5px at 200px 60px, rgba(255,255,255,0.4), transparent),
+              radial-gradient(1px 1px at 250px 20px, #ccc, transparent);
+  background-repeat: repeat;
+  background-size: 300px 150px;
+  animation: stars 25s linear infinite;
+  z-index: 1;
+}
+
+@keyframes stars {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-150px); }
+}
+
+/* Racing Road Effect */
+.racing-road {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  transform-style: preserve-3d;
+}
+
+/* Road Lines - Perspective Effect */
+.road-lines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.road-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    transparent 35%, 
+    rgba(247, 37, 133, 0.3) 40%, 
+    rgba(114, 9, 183, 0.3) 50%, 
+    rgba(247, 37, 133, 0.3) 60%, 
+    transparent 65%, 
+    transparent 100%
+  );
+  box-shadow: 0 0 5px rgba(247, 37, 133, 0.2);
+  animation: roadMove 2s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes roadMove {
+  0% {
+    transform: scale(0.1) translateZ(0px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(10) translateZ(500px);
+    opacity: 0;
+  }
+}
+
+/* Road Side Lines */
+.road-sides {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+}
+
+.road-side {
+  position: absolute;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, 
+    transparent 0%, 
+    rgba(247, 37, 133, 0.2) 20%, 
+    rgba(114, 9, 183, 0.2) 50%, 
+    rgba(247, 37, 133, 0.2) 80%, 
+    transparent 100%
+  );
+  box-shadow: 0 0 8px rgba(247, 37, 133, 0.3);
+  animation: sideMove 3s linear infinite;
+}
+
+.road-side.left {
+  left: 20%;
+  transform-origin: left;
+}
+
+.road-side.right {
+  right: 20%;
+  transform-origin: right;
+}
+
+@keyframes sideMove {
+  0% {
+    transform: scaleY(0.1) translateZ(0px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1) translateZ(300px);
+    opacity: 0;
+  }
+}
+
+/* Speed Lines */
+.speed-lines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+}
+
+.speed-line {
+  position: absolute;
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(180deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    transparent 100%
+  );
+  animation: speedMove 1.5s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes speedMove {
+  0% {
+    transform: translateY(-100px) scale(0.1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) scale(2);
+    opacity: 0;
+  }
+}
+
+/* Space Particles */
+.space-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  animation: particleFloat 8s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.5);
+    opacity: 1;
+  }
+}
+
+/* Main Content - Above Racing Road */
+.loading-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  width: 100%;
+  height: 100%;
+}
+
+
+
+/* Logo Section - DEVKRITI Style */
+.logo-section {
+  margin-bottom: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-container {
+  position: relative;
+  animation: logoFloat 6s ease-in-out infinite;
+}
+
+.logo-circle {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+  border-radius: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(247, 37, 133, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.logo-circle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+  animation: logoShine 3s ease-in-out infinite;
+}
+
+.logo-inner {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-text {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-10px) scale(1.05); }
+}
+
+@keyframes logoShine {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+/* Text Section - DEVKRITI Style */
+.text-section {
+  margin-bottom: 5rem;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.main-text-container {
+  margin-bottom: 3rem;
+}
+
+.main-text {
+  font-size: 5rem;
+  font-weight: 900;
+  color: white;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  animation: textGlow 3s ease-in-out infinite alternate;
+  min-height: 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  font-family: 'Arial', sans-serif;
+}
+
+@keyframes textGlow {
+  from { 
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+    transform: scale(1);
+  }
+  to { 
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+    transform: scale(1.02);
+  }
+}
+
+.cursor {
+  animation: blink 1s infinite;
+  color: white;
+  font-weight: 900;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.subtitle-container {
+  opacity: 0;
+  animation: fadeInUp 1s ease-out 1s forwards;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: #e2e8f0;
+  font-weight: 300;
+  letter-spacing: 2px;
+  transition: all 0.5s ease;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+/* Button Section - DEVKRITI Style */
+.button-section {
+  animation: fadeInUp 1s ease-out 5s both;
+  margin-top: 3rem;
+}
+
+.continue-button {
+  background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+  border: none;
+  border-radius: 60px;
+  padding: 1.5rem 4rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  transition: all 0.4s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: 'Arial', sans-serif;
+  backdrop-filter: blur(10px);
+}
+
+.continue-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s;
+}
+
+.continue-button:hover::before {
+  left: 100%;
+}
+
+.continue-button:hover {
+  transform: translateY(-8px) scale(1.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.continue-button.hovered {
+  transform: translateY(-8px) scale(1.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.button-text {
+  position: relative;
+  z-index: 1;
+}
+
+.button-icon {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+  font-size: 1rem;
+}
+
+.continue-button:hover .button-icon {
+  transform: translateX(8px);
+}
+
+/* Progress Section - DEVKRITI Style */
+.progress-section {
+  position: absolute;
+  bottom: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  z-index: 10;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f72585, #7209b7, #3a0ca3);
+  border-radius: 4px;
+  animation: progressFill 6s ease-out forwards;
+  box-shadow: 0 0 10px rgba(247, 37, 133, 0.3);
+}
+
+@keyframes progressFill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design - DEVKRITI Style */
+@media (max-width: 768px) {
+  .main-text {
+    font-size: 3.5rem;
+    min-height: 4rem;
+    letter-spacing: 3px;
+  }
+  
+  .logo-circle {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .logo-inner {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .logo-text {
+    font-size: 1.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+    letter-spacing: 1.5px;
+  }
+  
+  .continue-button {
+    padding: 1.2rem 3rem;
+    font-size: 1.1rem;
+    letter-spacing: 1.5px;
+  }
+  
+  .progress-section {
+    width: 300px;
+    bottom: 3rem;
+  }
+  
+  /* Racing Road Responsive */
+  .road-side.left {
+    left: 15%;
+  }
+  
+  .road-side.right {
+    right: 15%;
+  }
+  
+  .road-line {
+    height: 1px;
+  }
+  
+  .speed-line {
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-text {
+    font-size: 2.5rem;
+    min-height: 3rem;
+    letter-spacing: 2px;
+  }
+  
+  .logo-circle {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .logo-inner {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .logo-text {
+    font-size: 1.2rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  
+  .continue-button {
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  
+  .progress-section {
+    width: 250px;
+    bottom: 2rem;
+  }
+  
+  /* Racing Road Mobile */
+  .road-side.left {
+    left: 10%;
+  }
+  
+  .road-side.right {
+    right: 10%;
+  }
+  
+  .road-line {
+    height: 1px;
+  }
+  
+  .speed-line {
+    height: 40px;
+  }
+  
+  .particle {
+    width: 1px;
+    height: 1px;
+  }
+} 

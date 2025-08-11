@@ -10,16 +10,18 @@
 
 .not-found-content {
   text-align: center;
-  max-width: 800px;
+  max-width: 1000px;
   width: 100%;
-  padding: 2rem;
+  padding: 4rem;
   background-color: var(--bg-secondary);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
+  overflow: visible;
+  position: relative;
 }
 
 .not-found-header h1 {
-  font-size: 8rem;
+  font-size: 12rem;
   font-weight: 900;
   margin: 0;
   background: linear-gradient(135deg, var(--accent), var(--secondary-light));
@@ -27,18 +29,25 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   line-height: 1;
+  position: relative;
+  z-index: 10;
+  margin-bottom: -2rem;
 }
 
 .not-found-header h2 {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   margin: 1rem 0 0.5rem;
   color: var(--text-primary);
+  position: relative;
+  z-index: 10;
 }
 
 .not-found-header p {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: var(--text-secondary);
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 10;
 }
 
 .not-found-actions {
@@ -52,6 +61,7 @@
 .action-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 0.8rem 1.5rem;
   border-radius: var(--radius);
   font-weight: 600;
@@ -60,11 +70,23 @@
   border: none;
   cursor: pointer;
   font-size: 1rem;
+  white-space: nowrap;
+  min-height: 48px;
+  line-height: 1.2;
+  text-align: center;
+  overflow: hidden;
 }
 
 .action-btn .btn-icon {
   margin-right: 0.5rem;
   font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.action-btn span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .home-btn {

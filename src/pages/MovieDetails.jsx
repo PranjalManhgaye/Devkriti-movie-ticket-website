@@ -1,175 +1,139 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaStar, FaClock, FaCalendarAlt, FaFilm, FaGlobe, FaPlayCircle, FaArrowLeft } from 'react-icons/fa';
+import { FaStar, FaTicketAlt } from 'react-icons/fa';
 import './MovieDetails.css';
+import moviesData from '../data/movies';
 
-// Mock data - in a real app, this would come from an API
-const movieDatabase = {
-  1: {
-    id: 1,
-    title: 'Inception',
-    rating: '8.8',
-    language: 'English',
-    genre: 'Sci-Fi',
-    format: 'IMAX',
-    image: 'https://via.placeholder.com/800x450/2a2a3c/ffffff?text=Inception',
-    banner: 'https://via.placeholder.com/1920x500/1a1a2e/ffffff?text=Inception+Banner',
-    duration: '2h 28m',
-    year: '2010',
-    director: 'Christopher Nolan',
-    cast: 'Leonardo DiCaprio, Joseph Gordon-Levitt, Elliot Page',
-    plot: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
-    trailer: 'https://www.youtube.com/embed/YoHD9XEInc0',
-  },
-  2: {
-    id: 2,
-    title: 'Parasite',
-    rating: '8.6',
-    language: 'Korean',
-    genre: 'Thriller',
-    format: '2D',
-    image: 'https://via.placeholder.com/800x450/2a2a3c/ffffff?text=Parasite',
-    banner: 'https://via.placeholder.com/1920x500/1a1a2e/ffffff?text=Parasite+Banner',
-    duration: '2h 12m',
-    year: '2019',
-    director: 'Bong Joon Ho',
-    cast: 'Song Kang-ho, Lee Sun-kyun, Cho Yeo-jeong',
-    plot: 'Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.',
-    trailer: 'https://www.youtube.com/embed/5xH0HfJHsaY',
-  },
-  // Add more movies as needed
-};
-
-// Mock recommendations based on the current movie
-const getRecommendations = (currentMovieId) => {
-  const allMovies = Object.values(movieDatabase);
-  return allMovies.filter(movie => movie.id !== currentMovieId).slice(0, 3);
-};
+const FALLBACK_POSTER = 'https://via.placeholder.com/250x370?text=No+Image';
 
 export default function MovieDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
-  const [showTrailer, setShowTrailer] = useState(false);
 
   useEffect(() => {
-    // In a real app, you would fetch this data from an API
-    const selectedMovie = movieDatabase[parseInt(id)];
+    const selectedMovie = moviesData.find(m => m.id === parseInt(id));
     if (selectedMovie) {
       setMovie(selectedMovie);
-      setRecommendations(getRecommendations(selectedMovie.id));
+      // Remove duplicates and the current movie from recommendations
+      const recs = moviesData.filter(m => m.id !== selectedMovie.id);
+      // Remove duplicate titles
+      const uniqueRecs = recs.filter((rec, idx, arr) => arr.findIndex(r => r.title === rec.title) === idx);
+      setRecommendations(uniqueRecs.slice(0, 5));
     }
   }, [id]);
 
-  if (!movie) {
-    return <div className="loading">Loading...</div>;
-  }
+  if (!movie) return <div className="loading">Loading...</div>;
+
+  // Cast grid
+  let castMembers = [];
+  try {
+    if (movie && movie.cast) {
+      castMembers = movie.cast.split(',').map(actor => ({
+        name: actor.trim(),
+        role: 'Actor',
+        image: `https://ui-avatars.com/api/?name=${encodeURIComponent(actor.trim())}&background=2a2a3c&color=fff&size=150`
+      }));
+    }
+  } catch {}
+
+  // Poster src with fallback
+  const posterSrc = movie.image || FALLBACK_POSTER;
 
   return (
-    <div className="movie-details">
-      <div 
-        className="movie-banner" 
-        style={{ backgroundImage: `url(${movie.banner})` }}
-      >
-        <div className="banner-overlay">
-          <button className="back-button" onClick={() => navigate(-1)}>
-            <FaArrowLeft /> Back to Movies
-          </button>
-          <div className="banner-content">
-            <h1>{movie.title} <span className="year">({movie.year})</span></h1>
-            <div className="movie-meta">
-              <span className="rating"><FaStar className="icon" /> {movie.rating}/10</span>
-              <span><FaClock className="icon" /> {movie.duration}</span>
-              <span><FaFilm className="icon" /> {movie.genre}</span>
-              <span><FaGlobe className="icon" /> {movie.language}</span>
-            </div>
-            <button 
-              className="trailer-button"
-              onClick={() => setShowTrailer(true)}
-            >
-              <FaPlayCircle /> Watch Trailer
-            </button>
+    <div className="movie-detail-root">
+      {/* Hero Section with background */}
+      <section className="movie-hero-bg" style={{ backgroundImage: `linear-gradient(rgba(20,20,30,0.85),rgba(20,20,30,0.85)), url(${posterSrc})` }}>
+        <div className="movie-hero-flex">
+          {/* Poster on left (desktop) or top (mobile) */}
+          <div className="movie-poster-standalone">
+            <img
+              src={posterSrc}
+              alt={movie.title + ' poster'}
+              onError={e => { e.target.onerror = null; e.target.src = FALLBACK_POSTER; }}
+              className="movie-poster-img"
+            />
           </div>
-        </div>
-      </div>
-
-      {showTrailer && (
-        <div className="trailer-modal">
-          <div className="trailer-container">
-            <button className="close-trailer" onClick={() => setShowTrailer(false)}>×</button>
-            <iframe
-              title={`${movie.title} Trailer`}
-              width="100%"
-              height="100%"
-              src={movie.trailer}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
-      )}
-
-      <div className="movie-content">
-        <div className="movie-info">
-          <div className="movie-poster">
-            <img src={movie.image} alt={movie.title} />
-          </div>
-          <div className="movie-desc">
-            <h2>Overview</h2>
-            <p>{movie.plot}</p>
-            
-            <div className="movie-details-grid">
-              <div className="detail-item">
-                <span className="detail-label">Director</span>
-                <span className="detail-value">{movie.director}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Cast</span>
-                <span className="detail-value">{movie.cast}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Release Date</span>
-                <span className="detail-value">{movie.year}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Format</span>
-                <span className="detail-value">{movie.format}</span>
-              </div>
-            </div>
-            
-            <button 
-              className="book-now-button"
-              onClick={() => navigate(`/booking`, { state: { movie } })}
-            >
+          {/* Info on right (desktop) or below (mobile) */}
+          <div className="movie-hero-main">
+            <h1 className="movie-title">{movie.title}</h1>
+            <div className="movie-release-date">{movie.year}</div>
+            {movie.tagline && <div className="movie-tagline">{movie.tagline}</div>}
+            <div className="movie-summary">{movie.plot}</div>
+            <button className="book-now-btn-accent" onClick={() => navigate(`/booking`, { state: { movie } })}>
               <FaTicketAlt /> Book Now
             </button>
           </div>
         </div>
+      </section>
 
-        {recommendations.length > 0 && (
-          <div className="recommendations">
-            <h2>You May Also Like</h2>
-            <div className="recommendations-grid">
-              {recommendations.map(rec => (
-                <div 
-                  key={rec.id} 
-                  className="recommendation-card"
-                  onClick={() => navigate(`/movies/${rec.id}`)}
-                >
-                  <img src={rec.image} alt={rec.title} />
-                  <h3>{rec.title}</h3>
-                  <div className="rec-meta">
-                    <span><FaStar /> {rec.rating}</span>
-                    <span>{rec.year}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+      {/* Movie Details Section */}
+      <section className="movie-details-section">
+        <div className="movie-details-grid">
+          <div className="detail-label">Director</div>
+          <div className="detail-value">{movie.director}</div>
+          <div className="detail-label">Release Date</div>
+          <div className="detail-value">{movie.year}</div>
+          <div className="detail-label">Genre</div>
+          <div className="detail-value">{movie.genre}</div>
+          <div className="detail-label">Format</div>
+          <div className="detail-value">{movie.format}</div>
+          <div className="detail-label">Language</div>
+          <div className="detail-value">{movie.language}</div>
+          <div className="detail-label">Rating</div>
+          <div className="detail-value"><FaStar className="star-icon" /> {movie.rating}/10</div>
+          <div className="detail-label">Duration</div>
+          <div className="detail-value">{movie.duration}</div>
+        </div>
+      </section>
+
+      {/* Overview Section */}
+      <section className="movie-overview-section">
+        <h2>Overview</h2>
+        <p className="movie-overview-text">{movie.plot}</p>
+      </section>
+
+      {/* Cast & Crew Grid */}
+      {castMembers.length > 0 && (
+        <section className="movie-cast-crew-section">
+          <h2>Cast & Crew</h2>
+          <div className="movie-cast-grid">
+            {castMembers.map((member, idx) => (
+              <div className="movie-cast-card text-center" key={idx}>
+                <img
+                  className="movie-cast-avatar"
+                  src={member.image || 'https://via.placeholder.com/100'}
+                  alt={member.name}
+                  style={{ width: '96px', height: '96px', borderRadius: '50%', objectFit: 'cover', margin: '0 auto' }}
+                  onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/100'; }}
+                />
+                <p className="movie-cast-name font-semibold mt-2">{member.name}</p>
+                <p className="movie-cast-role text-sm text-gray-400">{member.role}</p>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </section>
+      )}
+
+      {/* Recommended Movies */}
+      {recommendations.length > 0 && (
+        <section className="movie-recommend-section">
+          <h2>You May Also Like</h2>
+          <div className="movie-recommend-scroll">
+            {recommendations.map(rec => (
+              <div className="movie-recommend-card" key={rec.id} onClick={() => navigate(`/movies/${rec.id}`)}>
+                <img src={rec.image} alt={rec.title} className="movie-recommend-img" />
+                <div className="movie-recommend-title">{rec.title}</div>
+                <div className="movie-recommend-meta">
+                  <span>{rec.year}</span>
+                  <span><FaStar className="star-icon" /> {rec.rating}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

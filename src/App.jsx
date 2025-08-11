@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import './App.css';
@@ -9,6 +9,8 @@ import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import LoadingScreen from './components/LoadingScreen';
+import AgentChatbot from './components/AgentChatbot';
 
 // Page Components
 import Home from './pages/Home';
@@ -24,6 +26,7 @@ import Notifications from './pages/Notifications';
 import Reviews from './pages/Reviews';
 import MovieDetails from './pages/MovieDetails';
 import PageNotFound from './pages/PageNotFound';
+import About from './pages/About';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -39,6 +42,28 @@ const ScrollToTop = () => {
 // Main App Component
 const App = () => {
   const location = useLocation();
+  const [showLoading, setShowLoading] = useState(true);
+  const [hasSeenLoading, setHasSeenLoading] = useState(false);
+
+  useEffect(() => {
+    // Check if user has seen the loading screen before
+    const hasSeen = localStorage.getItem('hasSeenLoading');
+    console.log('Loading screen check:', { hasSeen, showLoading });
+    if (hasSeen) {
+      setShowLoading(false);
+      setHasSeenLoading(true);
+    }
+  }, []);
+
+  const handleLoadingComplete = () => {
+    setShowLoading(false);
+    setHasSeenLoading(true);
+    localStorage.setItem('hasSeenLoading', 'true');
+  };
+
+  if (showLoading) {
+    return <LoadingScreen onComplete={handleLoadingComplete} />;
+  }
   
   return (
     <div className="app">
@@ -70,12 +95,14 @@ const App = () => {
             <Route path="/signup" element={<Signup />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/reviews" element={<Reviews />} />
+            <Route path="/about" element={<About />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </AnimatePresence>
       </main>
       
       <Footer />
+      <AgentChatbot />
     </div>
   );
 };
